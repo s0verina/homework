@@ -1,3 +1,4 @@
+export const GIPHY_API_URL = `http://api.giphy.com/v1/gifs/search?api_key=${process.env.GIPHY_KEY}`;
 export const GITHUB_API_URL = 'https://api.github.com/';
 
 export function fetcher<T>(url: string): Promise<T>  {

@@ -66,7 +66,7 @@ export const RepoAutocomplete: React.FC<RepoAutocompleteProps> = ({ owner, onCha
               ...params.InputProps,
               endAdornment: (
                 <React.Fragment>
-                  {isLoading ? <CircularProgress size={20} /> : null}
+                  {isLoading ? <CircularProgress color="secondary" size={20} /> : null}
                   {params.InputProps.endAdornment}
                 </React.Fragment>
               ),

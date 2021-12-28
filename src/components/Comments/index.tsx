@@ -5,10 +5,12 @@ import {
   Box,
   List,
   ListItem,
-  Pagination
+  Pagination,
+  Popover
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import { StyledBox } from '../StyledBox';
+import { Grid } from '../Grid';
 import { fetcher } from '../../api';
 
 type Comment = {
@@ -25,6 +27,12 @@ const COMMETS_LIMIT = 10;
 
 export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
   const [pageIndex, setPageIndex] = React.useState<number>(1);
+  const [selectedText, setSelectedText] = React.useState<string>('');
+  const [target, setTarget] = React.useState<HTMLParagraphElement | null>(null);
+  const closePopover = () => {
+    setTarget(null);
+    setSelectedText('');
+  };
   const { data, error } = useSWR<Comment[]>(
     `${url}?per_page=${COMMETS_LIMIT}&page=${pageIndex}`,
     fetcher
@@ -77,6 +85,13 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
                   backgroundColor: 'rgba(175, 184, 193, 0.2)'
                 }
               }}
+              onClick={(event: React.MouseEvent<HTMLParagraphElement>) => {
+                const text = window.getSelection()?.toString() || '';
+                if (text) {
+                  setSelectedText(window.getSelection()?.toString() || '');
+                  setTarget(event.target as HTMLParagraphElement);
+                }
+              }}
             >
               <ReactMarkdown>
                 {comment.body}
@@ -97,6 +112,17 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
           }}
         />
       )}
+      <Popover
+        open={Boolean(target)}
+        anchorEl={target}
+        onClose={closePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <Box sx={{ p: 1 }}><Grid text={selectedText} /></Box>
+      </Popover>
     </>
   );
 }
