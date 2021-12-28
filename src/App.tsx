@@ -5,12 +5,14 @@ import { SearchResult } from './components/SearchResult';
 export type SearchParams = {
   owner: string;
   repoName: string;
+  issuesCount: number;
 }
 
 export function App() {
   const [values, setValues] = React.useState<SearchParams>({
     owner: '',
-    repoName: ''
+    repoName: '',
+    issuesCount: 0
   });
   const onFormSubmit = React.useCallback((values: SearchParams) => {
     setValues(values);
@@ -20,7 +22,11 @@ export function App() {
     <main>
       <SearchForm onFormSubmit={onFormSubmit} />
       {values.owner && values.repoName && (
-        <SearchResult owner={values.owner} repoName={values.repoName} />
+        <SearchResult
+          owner={values.owner}
+          repoName={values.repoName}
+          issuesCount={values.issuesCount}
+        />
       )}
     </main>
   );

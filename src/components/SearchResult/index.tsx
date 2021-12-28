@@ -29,7 +29,7 @@ const ErrorMessage = styled('div')({
 });
 
 
-export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName }) => {
+export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName, issuesCount }) => {
   const { data, error } = useSWR<Issue[]>(
     `${GITHUB_API_URL}repos/${owner}/${repoName}/issues`,
     fetcher
@@ -58,7 +58,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName }) =
                 {Boolean(issue.pull_request) && <PRIcon />}
                 {Boolean(issue.labels.length) && (
                   <Box sx={{ display: 'flex' }}>{issue.labels.map((label: Label) =>
-                    <IssueLabel color={label.color} name={label.name} />
+                    <IssueLabel key={label.name} color={label.color} name={label.name} />
                   )}
                   </Box>
                 )}

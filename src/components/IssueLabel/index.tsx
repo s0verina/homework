@@ -17,4 +17,4 @@ const StyledLabel = styled('div')({
 
 export const IssueLabel: React.FC<Label> = ({ color, name }) => (
   <StyledLabel style={{ backgroundColor: `#${color}` }}>{name}</StyledLabel>
-);
+)

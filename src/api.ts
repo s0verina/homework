@@ -13,4 +13,4 @@ export function fetcher<T>(url: string): Promise<T>  {
 
     return res.json();
   })
-};
+}

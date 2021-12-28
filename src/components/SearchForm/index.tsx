@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { TextField, Button, Box } from '@mui/material';
 import { styled } from '@mui/system';
+import { RepoAutocomplete } from '../RepoAutocomplete';
 import { SearchParams } from '../../App';
 
-interface SearchFormProps {
+type SearchFormProps = {
   onFormSubmit: (values: SearchParams) => void;
 }
 
@@ -15,11 +16,15 @@ const StyledForm = styled('form')({
 export const SearchForm: React.FC<SearchFormProps> = ({ onFormSubmit }) => {
   const [values, setValues] = React.useState<SearchParams>({
     owner: '',
-    repoName: ''
+    repoName: '',
+    issuesCount: 0
   });
   const onUpdate = <Key extends keyof SearchParams>(name: Key, value: SearchParams[Key]) =>
     setValues((form) => ({ ...form, [name]: value }));
-
+  const onSelectChanged = React.useCallback((value: string, issuesCount: number) => {
+    onUpdate('repoName', value);
+    onUpdate('issuesCount', issuesCount);
+  }, []);
   const onSubmit = React.useCallback((e: React.FormEvent) => {
     e.preventDefault();
     onFormSubmit(values);
@@ -38,14 +43,9 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onFormSubmit }) => {
         />
       </Box>
       <Box sx={{ mb: 2 }}>
-        <TextField
-          name="repo-name"
-          label="Repository name"
-          id="repo-name"
-          size="small"
-          fullWidth
-          variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onUpdate('repoName', e.target.value)}
+        <RepoAutocomplete
+          owner={values.owner}
+          onChange={onSelectChanged}
         />
       </Box>
       <Button

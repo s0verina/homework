@@ -25,7 +25,8 @@
     "parcel": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "swr": "^1.1.2"
+    "swr": "^1.1.2",
+    "use-debounce": "^7.0.1"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.1",
