@@ -1,7 +1,9 @@
+import { SearchForm } from './components/SearchForm';
+
 export function App() {
   return (
     <main>
-       <h1>Homework</h1>
+       <SearchForm onFormSubmit={() => {}} />
     </main>
   );
 }
