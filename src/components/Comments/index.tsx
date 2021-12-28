@@ -121,7 +121,7 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
           horizontal: 'center',
         }}
       >
-        <Box sx={{ p: 1 }}><Grid text={selectedText} /></Box>
+        <Box sx={{ p: 1 }}><Grid text={selectedText} url={url} /></Box>
       </Popover>
     </>
   );

@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress, Modal, IconButton } from '@mui/material';
+import { styled } from '@mui/system';
 import { fetchGifs } from '../../actions/fetchGifs';
+import { addComment } from '../../actions/addComment';
 
 type GridProps = {
   text: string;
@@ -26,8 +28,22 @@ enum Status {
   LOADED = 'loaded'
 }
 
-export const Grid: React.FC<GridProps> = ({ text }) => {
+const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M0.5 0.499023L23.5 23.499" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M23.5 0.499023L0.5 23.499" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+const StylesQuote = styled('blockquote')({
+  marginLeft: '0',
+  borderLeft: '1px solid',
+  paddingLeft: 4
+});
+
+export const Grid: React.FC<GridProps> = ({ text, url }) => {
   const [status, setStatus] = React.useState<Status>(Status.LOADED);
+  const [selectedImage, setSelectedImage] = React.useState<string>('');
   const isLoading = status === Status.LOADING;
   const offset = React.useRef<number>();
   const [items, setItems] = React.useState<Image[]>([]);
@@ -37,6 +53,14 @@ export const Grid: React.FC<GridProps> = ({ text }) => {
     offset.current = newItems.pagination.offset;
     setItems(items.concat(newItems.data));
   };
+  const onModalClose = () => {
+    setSelectedImage('');
+  }
+  const sendComment = React.useCallback(async () => {
+    const bodyText = `> ${text}\r\n\r\n!['text'](${selectedImage})\r\n`;
+    await addComment({ body: bodyText, url });
+    onModalClose();
+  }, [selectedImage]);
 
   React.useEffect(() => {
     async function loadInitialItems() {
@@ -83,7 +107,7 @@ export const Grid: React.FC<GridProps> = ({ text }) => {
                 const src = image.images.fixed_width.url;
 
                 return (
-                  <div key={image.id} className="image" style={updatedStyle}>
+                  <div key={image.id} className="image" style={updatedStyle} onClick={() => {setSelectedImage(src)}}>
                     <img style={{ height: '100%', objectFit: 'cover' }} alt={image.title} src={src} />
                   </div>
                 );
@@ -92,6 +116,36 @@ export const Grid: React.FC<GridProps> = ({ text }) => {
           )}
         </InfiniteLoader>
       )}
+      <Modal
+        open={Boolean(selectedImage)}
+        onClose={onModalClose}
+      >
+        <Box sx={{
+          width: '400px',
+          backgroundColor: '#fff',
+          margin: '0 auto',
+          position: 'relative',
+          transform: 'translatey(-50%)',
+          top: '50%',
+          p: 4
+        }}>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            '& svg': { width: '0.75em;' }
+          }}>
+            <IconButton aria-label="Close modal" onClick={onModalClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <StylesQuote>{text}</StylesQuote>
+          <Box>
+            <img src={selectedImage} />
+          </Box>
+
+          <Button onClick={sendComment} variant="contained">Send</Button>
+        </Box>
+      </Modal>
     </Box>
   );
 }
