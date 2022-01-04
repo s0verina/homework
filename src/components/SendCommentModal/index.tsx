@@ -20,6 +20,7 @@ const CloseIcon = () => (
 const StylesQuote = styled('blockquote')({
   marginLeft: '0',
   borderLeft: '1px solid',
+  borderColor: 'secondary.main',
   paddingLeft: 4
 });
 

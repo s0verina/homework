@@ -13,13 +13,15 @@ export const Comment: React.FC<CommentProps> = ({ body, onClick }) => (
       display: 'block',
       paddingLeft: '0',
       paddingRight: '0',
-      borderBottom: '1px solid black',
+      borderBottom: '1px solid',
+      borderColor: 'secondary.main',
       overflow: 'hidden',
       '& img': {
         maxWidth: '100%'
       },
       '& blockquote': {
         borderLeft: '2px solid',
+        borderColor: 'secondary.main',
         margin: 0,
         paddingLeft: '16px'
       },
