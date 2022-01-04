@@ -52,33 +52,43 @@ export const Grid: React.FC<GridProps> = ({ text, url }) => {
   }, []);
 
   return (
-    <Box>
-      {isLoading && <CircularProgress />}
-      {status === Status.LOADED && (
-        <InfiniteLoader
-          isItemLoaded={(index) => index < items.length}
-          itemCount={itemCount}
-          loadMoreItems={loadMoreItems}
-          minimumBatchSize={15}
-          threshold={10}
-        >
-          {({ onItemsRendered, ref }) => (
-            <GifList
-              ref={ref}
-              itemCount={itemCount}
-              onItemsRendered={onItemsRendered}
-              setSelectedImage={setSelectedImage}
-              items={items}
-            />
-          )}
-        </InfiniteLoader>
-      )}
+    <>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '220px',
+        height: '150px'
+        }}
+      >
+        {isLoading && <CircularProgress />}
+
+        {status === Status.LOADED && (
+          <InfiniteLoader
+            isItemLoaded={(index) => index < items.length}
+            itemCount={itemCount}
+            loadMoreItems={loadMoreItems}
+            minimumBatchSize={15}
+            threshold={10}
+          >
+            {({ onItemsRendered, ref }) => (
+              <GifList
+                ref={ref}
+                itemCount={itemCount}
+                onItemsRendered={onItemsRendered}
+                setSelectedImage={setSelectedImage}
+                items={items}
+              />
+            )}
+          </InfiniteLoader>
+        )}
+      </Box>
       <SendCommentModal
         text={text}
         url={url}
         selectedImage={selectedImage}
         onModalClose={onModalClose}
       />
-    </Box>
+    </>
   );
 }

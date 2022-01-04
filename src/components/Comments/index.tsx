@@ -7,6 +7,7 @@ import {
   Pagination,
   Popover
 } from '@mui/material';
+import { breakpoints } from '../../breakpoints';
 import { StyledBox } from '../StyledBox';
 import { Grid } from '../Grid';
 import { Comment as CommentItem } from '../Comment';
@@ -25,6 +26,7 @@ type CommentsProps = {
 const COMMETS_LIMIT = 10;
 
 export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
+  const listRef = React.useRef<HTMLUListElement>(null);
   const [pageIndex, setPageIndex] = React.useState<number>(1);
   const [selectedText, setSelectedText] = React.useState<string>('');
   const [target, setTarget] = React.useState<HTMLParagraphElement | null>(null);
@@ -40,10 +42,16 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
     setPageIndex(value);
   }, []);
 
+  React.useEffect(() => {
+    if (window.innerWidth < parseInt(breakpoints.sm) && listRef?.current) {
+      listRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [data]);
+
   if (!error && !data) {
     return (
       <StyledBox>
-        <Box sx={{ display: 'flex', alignItem: 'center' }}>
+        <Box sx={{ display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
           <CircularProgress />
         </Box>
       </StyledBox>
@@ -60,7 +68,7 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
 
   return (
     <>
-      <List>
+      <List ref={listRef}>
         {data && data.map((comment: Comment) => (
           <CommentItem
             key={comment.id}
@@ -77,6 +85,7 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
       </List>
       {commentsCount > COMMETS_LIMIT && (
         <Pagination
+          page={pageIndex}
           count={Math.ceil(commentsCount / 10)}
           variant="outlined"
           shape="rounded"

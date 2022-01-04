@@ -3,9 +3,9 @@ import { styled } from '@mui/system';
 const StyledSvg = styled('svg')({
   display: 'inline-block',
   width: '1em',
-  margin: '0 2px',
+  margin: '2px',
   fill: '#2da44e',
-  verticalAlign: 'middle'
+  verticalAlign: 'text-bottom'
 });
 
 export const PRIcon = () => (

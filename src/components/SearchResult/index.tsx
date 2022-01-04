@@ -10,6 +10,7 @@ import { Label } from '../IssueLabel';
 import { Comments } from '../Comments';
 import { StyledBox } from '../StyledBox';
 import { SearchResultItem } from '../SearchResultItem';
+import { breakpoints } from '../../breakpoints';
 import { GITHUB_API_URL, fetcher } from '../../api';
 import { SearchParams } from '../../App';
 
@@ -60,7 +61,13 @@ export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName, iss
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{
+        display: 'flex',
+
+        [`@media (max-width: ${breakpoints.sm})`]: {
+          display: 'block',
+        }
+      }}>
       <StyledBox>
         <List>
           {data && data.map((issue: Issue) => {
@@ -79,10 +86,15 @@ export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName, iss
         </List>
         {issuesCount > ISSUES_LIMIT && (
           <Pagination
+            page={pageIndex}
             count={Math.ceil(issuesCount / 10)}
             variant="outlined"
             shape="rounded"
             onChange={handleChange}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
           />
         )}
       </StyledBox>
