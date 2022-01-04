@@ -4,14 +4,12 @@ import {
   CircularProgress,
   Box,
   List,
-  ListItem,
-  ListItemButton,
   Pagination
 } from '@mui/material';
-import { IssueLabel, Label } from '../IssueLabel';
+import { Label } from '../IssueLabel';
 import { Comments } from '../Comments';
-import { PRIcon } from '../PRIcon';
 import { StyledBox } from '../StyledBox';
+import { SearchResultItem } from '../SearchResultItem';
 import { GITHUB_API_URL, fetcher } from '../../api';
 import { SearchParams } from '../../App';
 
@@ -46,7 +44,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName, iss
   if (!error && !data) {
     return (
       <StyledBox>
-        <Box sx={{ display: 'flex', alignItem: 'center' }}>
+        <Box sx={{ display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
           <CircularProgress />
         </Box>
       </StyledBox>
@@ -67,38 +65,26 @@ export const SearchResult: React.FC<SearchResultProps> = ({ owner, repoName, iss
         <List>
           {data && data.map((issue: Issue) => {
             return (
-              <ListItem
+              <SearchResultItem
                 key={issue.number}
-                sx={{
-                  paddingLeft: '0',
-                  paddingRight: '0',
-                  border: issue.number === selectedIssue?.number ? '1px solid': 'none'
-                }}>
-                <ListItemButton
-                  sx={{ display: 'block', paddingLeft: 1, paddingRight: 1 }}
-                  onClick={() => setSelectedIssue(issue)}
-                >
-                  {`#${issue.number} ${issue.title}`}
-                  {Boolean(issue.pull_request) && <PRIcon />}
-                  {Boolean(issue.labels.length) && (
-                    <Box sx={{ display: 'flex' }}>{issue.labels.map((label: Label) =>
-                      <IssueLabel key={label.name} color={label.color} name={label.name} />
-                    )}
-                    </Box>
-                  )}
-                </ListItemButton>
-              </ListItem>
+                number={issue.number}
+                title={issue.title}
+                isSelected={issue.number === selectedIssue?.number}
+                onIssueClick={() => setSelectedIssue(issue)}
+                isPullRequest={Boolean(issue.pull_request)}
+                labels={issue.labels}
+              />
             );
           })}
-          {issuesCount > ISSUES_LIMIT && (
-            <Pagination
-              count={Math.ceil(issuesCount / 10)}
-              variant="outlined"
-              shape="rounded"
-              onChange={handleChange}
-            />
-          )}
         </List>
+        {issuesCount > ISSUES_LIMIT && (
+          <Pagination
+            count={Math.ceil(issuesCount / 10)}
+            variant="outlined"
+            shape="rounded"
+            onChange={handleChange}
+          />
+        )}
       </StyledBox>
       {selectedIssue && (
         <StyledBox>

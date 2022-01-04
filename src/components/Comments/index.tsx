@@ -4,13 +4,12 @@ import {
   CircularProgress,
   Box,
   List,
-  ListItem,
   Pagination,
   Popover
 } from '@mui/material';
-import ReactMarkdown from 'react-markdown';
 import { StyledBox } from '../StyledBox';
 import { Grid } from '../Grid';
+import { Comment as CommentItem } from '../Comment';
 import { fetcher } from '../../api';
 
 type Comment = {
@@ -62,43 +61,19 @@ export const Comments: React.FC<CommentsProps> = ({ url, commentsCount }) => {
   return (
     <>
       <List>
-        {data && data.map((comment: Comment) => {
-          return (
-            <ListItem
-              key={comment.id}
-              sx={{
-                display: 'block',
-                paddingLeft: '0',
-                paddingRight: '0',
-                borderBottom: '1px solid black',
-                overflow: 'hidden',
-                '& img': {
-                  maxWidth: '100%'
-                },
-                '& blockquote': {
-                  borderLeft: '2px solid',
-                  margin: 0,
-                  paddingLeft: '16px'
-                },
-                '& code': {
-                  padding: '.25em',
-                  backgroundColor: 'rgba(175, 184, 193, 0.2)'
-                }
-              }}
-              onClick={(event: React.MouseEvent<HTMLParagraphElement>) => {
-                const text = window.getSelection()?.toString() || '';
-                if (text) {
-                  setSelectedText(window.getSelection()?.toString() || '');
-                  setTarget(event.target as HTMLParagraphElement);
-                }
-              }}
-            >
-              <ReactMarkdown>
-                {comment.body}
-              </ReactMarkdown>
-            </ListItem>
-          );
-        })}
+        {data && data.map((comment: Comment) => (
+          <CommentItem
+            key={comment.id}
+            body={comment.body}
+            onClick={(event: React.MouseEvent) => {
+              const text = window.getSelection()?.toString() || '';
+              if (text) {
+                setSelectedText(window.getSelection()?.toString() || '');
+                setTarget(event.target as HTMLParagraphElement);
+              }
+            }}
+          />
+        ))}
       </List>
       {commentsCount > COMMETS_LIMIT && (
         <Pagination
