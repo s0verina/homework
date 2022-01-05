@@ -30,7 +30,7 @@ export const Comment: React.FC<CommentProps> = ({ body, onClick }) => (
         backgroundColor: 'rgba(175, 184, 193, 0.2)'
       }
     }}
-    onClick={onClick}
+    onMouseUp={onClick}
   >
     <ReactMarkdown>
       {body}
