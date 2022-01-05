@@ -18,7 +18,8 @@ const CloseIcon = () => (
 )
 
 const StylesQuote = styled('blockquote')({
-  marginLeft: '0',
+  marginLeft: 0,
+  marginBottom: 8,
   borderLeft: '1px solid',
   borderColor: 'secondary.main',
   paddingLeft: 4
@@ -35,13 +36,24 @@ export const SendCommentModal: React.FC<SendCommentModalProps> = ({
   onModalClose
 }) => {
   const [isSending, setIsSending] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>('');
   const sendComment = React.useCallback(async () => {
     const bodyText = formatText(text, selectedImage);
+    setError('');
     setIsSending(true);
-    await addComment({ body: bodyText, url });
-    setIsSending(false);
-    onModalClose();
+    try {
+      await addComment({ body: bodyText, url });
+      onModalClose();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err?.message as string);
+      }
+    } finally {
+      setIsSending(false);
+    }
   }, [selectedImage]);
+
+  React.useEffect(() => () => setError(''), []);
 
   return (
     <Modal
@@ -67,10 +79,12 @@ export const SendCommentModal: React.FC<SendCommentModalProps> = ({
           </IconButton>
         </Box>
         <StylesQuote>{text}</StylesQuote>
-        <Box>
+        <Box sx={{ lineHeight: 0, marginBottom: 1, }}>
           <img alt="" src={selectedImage} />
         </Box>
-
+        {Boolean(error) && (
+          <Box sx={{ marginBottom: 1, color: 'error.main', fontSize: '0.875em' }}>{error}</Box>
+        )}
         <Button
           disabled={isSending}
           onClick={sendComment}

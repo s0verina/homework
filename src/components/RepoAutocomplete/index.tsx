@@ -58,6 +58,7 @@ export const RepoAutocomplete: React.FC<RepoAutocompleteProps> = ({ owner, onCha
         disabled={!owner || isLoading}
         value={selectedOption}
         onChange={onSelect}
+        disableClearable
         renderInput={(params) => (
           <TextField
             {...params}

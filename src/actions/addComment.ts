@@ -10,5 +10,12 @@ export const addComment = async ({ body, url }: AddCommentProps) => {
     headers: {
       'Authorization': `token ${process.env.GITHUB_TOCKEN}`,
     }
-  }).then((response) =>  response.json());
+  }).then(async (res) => {
+    if (!res.ok) {
+      const error = new Error('An error occurred while posting comment.');
+      throw error;
+    }
+
+    return res.json();
+  });
 }
